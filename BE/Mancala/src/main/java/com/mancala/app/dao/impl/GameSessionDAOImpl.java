@@ -2,8 +2,6 @@ package com.mancala.app.dao.impl;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.springframework.stereotype.Service;
 
 import com.mancala.app.dao.GameSessionDAO;
@@ -11,7 +9,6 @@ import com.mancala.app.model.GameSession;
 import com.mancala.app.model.GameStatus;
 import com.mancala.app.repository.GameSessionRepository;
 
-@Transactional
 @Service
 public class GameSessionDAOImpl implements GameSessionDAO {
 

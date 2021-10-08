@@ -28,7 +28,6 @@ public class MancalaWebSocketHandler extends TextWebSocketHandler {
 	@Autowired
 	private SimpMessagingTemplate template;
 
-	@MessageMapping("/{gameId}")
 	@SendToUser
 	public String tttt() {
 		return "";

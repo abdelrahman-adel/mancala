@@ -1,16 +1,14 @@
 package com.mancala.app.model;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 
-@Entity
 @Data
+@Document("game_session")
 public class GameSession {
 
 	@JsonIgnore
@@ -20,7 +18,5 @@ public class GameSession {
 	private String player2;
 	private String turn;
 	private GameStatus status;
-
-	@OneToOne(fetch = FetchType.EAGER)
 	private GameBoard gameBoard;
 }

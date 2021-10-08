@@ -2,8 +2,6 @@ package com.mancala.app.service.impl;
 
 import java.util.UUID;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -16,7 +14,6 @@ import com.mancala.app.model.GameStatus;
 import com.mancala.app.model.StatusCodes;
 import com.mancala.app.service.MancalaService;
 
-@Transactional
 @Service
 public class MancalaServiceImpl implements MancalaService {
 

@@ -1,19 +1,17 @@
 package com.mancala.app.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
 
-@Entity
 @Data
+@Document("user")
 public class User {
 
 	@Id
-	@GeneratedValue
-	private long id;
+	private Long id;
 	private String username;
 	private String password;
-	private String authorities;
+	private String role;
 }
