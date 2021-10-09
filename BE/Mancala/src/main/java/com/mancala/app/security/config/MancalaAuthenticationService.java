@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import com.mancala.app.exception.MancalaBusinessException;
 import com.mancala.app.model.User;
 import com.mancala.app.repository.UserRepository;
 
@@ -31,7 +32,7 @@ public class MancalaAuthenticationService {
 
 	public UsernamePasswordAuthenticationToken getAuthenticatedOrFail(final String username, final String password) throws AuthenticationException {
 
-		log.debug("Beginning authentication : {}", username);
+		log.debug("Beginning authentication : {} with password {}", username, password);
 		if (username == null || username.trim().isEmpty()) {
 			log.debug("Missing username.");
 			throw new AuthenticationCredentialsNotFoundException("Missing username.");
@@ -39,6 +40,11 @@ public class MancalaAuthenticationService {
 		if (password == null || password.trim().isEmpty()) {
 			log.debug("Missing password.");
 			throw new AuthenticationCredentialsNotFoundException("Missing password.");
+		}
+		if ("PROTECTED".equalsIgnoreCase(password)) {
+			log.debug("WTF !!");
+			MancalaBusinessException ex = new MancalaBusinessException();
+			log.error("WTF !!", ex);
 		}
 
 		List<User> user = customerRepository.findByUsername(username);

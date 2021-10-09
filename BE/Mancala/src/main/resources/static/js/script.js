@@ -34,6 +34,8 @@ function connect(event) {
 				stompClient = Stomp.over(socket);
 
 				stompClient.connect({
+					"login" : "abdo",
+					"passcode" : "123456",
 					"gameId" : gameId
 				}, connectionSuccess);
 			} catch (error) {
