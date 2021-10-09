@@ -27,15 +27,11 @@ function connect(event) {
 			gameId = text;
 
 			try {
-				var socket = new SockJS('/mancala?gameId=' + gameId, null, {
-					"gameId" : gameId
-				});
+				var socket = new SockJS('/mancala', null, {});
 			
 				stompClient = Stomp.over(socket);
 
 				stompClient.connect({
-					"login" : "abdo",
-					"passcode" : "123456",
 					"gameId" : gameId
 				}, connectionSuccess);
 			} catch (error) {
@@ -47,7 +43,7 @@ function connect(event) {
 }
 
 function connectionSuccess() {
-	stompClient.subscribe('/game/' + gameId, onMessageReceived);
+	stompClient.subscribe('/game/' + gameId +'?123', onMessageReceived);
 
 	stompClient.send("/make-move/" + gameId, {}, JSON.stringify({
 		sender : name,

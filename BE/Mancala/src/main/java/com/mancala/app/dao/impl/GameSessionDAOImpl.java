@@ -1,7 +1,6 @@
 package com.mancala.app.dao.impl;
 
-import java.util.List;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mancala.app.dao.GameSessionDAO;
@@ -12,12 +11,12 @@ import com.mancala.app.repository.GameSessionRepository;
 @Service
 public class GameSessionDAOImpl implements GameSessionDAO {
 
+	@Autowired
 	private GameSessionRepository gameSessionRepository;
 
 	@Override
 	public GameSession findGameByAnyPlayer(String user) {
-		List<GameSession> games = gameSessionRepository.findByPlayer1OrPlayer2(user, user);
-		return games != null ? games.get(0) : null;
+		return gameSessionRepository.findByPlayer1OrPlayer2(user, user);
 	}
 
 	@Override

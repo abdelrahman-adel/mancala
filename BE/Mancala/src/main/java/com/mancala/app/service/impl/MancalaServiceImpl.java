@@ -1,9 +1,9 @@
 package com.mancala.app.service.impl;
 
+import java.security.Principal;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import com.mancala.app.dao.GameSessionDAO;
@@ -20,8 +20,16 @@ public class MancalaServiceImpl implements MancalaService {
 	@Autowired
 	private GameSessionDAO mancalaDao;
 
-	@Autowired
-	private SimpMessagingTemplate template;
+	@Override
+	public void validateUserWithGame(Principal user, String gameId) {
+
+		String name = user.getName();
+		GameSession gameSession = mancalaDao.findGameByAnyPlayer(name);
+
+		if (gameSession == null || !gameSession.getId().equalsIgnoreCase(gameId)) {
+			throw new MancalaBusinessException(StatusCodes.USER_NOT_ALLOWED_FOR_GAME);
+		}
+	}
 
 	@Override
 	public GameSession initiate(String user) {
@@ -75,13 +83,13 @@ public class MancalaServiceImpl implements MancalaService {
 	private void validateGameSession(String user, GameSession gameSession) {
 		validateGameSessionExistence(gameSession);
 		if (!user.equals(gameSession.getTurn())) {
-			throw new MancalaBusinessException(StatusCodes.USER_NOT_YOUR_TURN);
+			throw new MancalaBusinessException(StatusCodes.NOT_YOUR_TURN);
 		}
 	}
 
 	private void validateGameSessionExistence(GameSession gameSession) {
 		if (gameSession == null) {
-			throw new MancalaBusinessException(StatusCodes.USER_NO_RUNNING_GAME);
+			throw new MancalaBusinessException(StatusCodes.NO_RUNNING_GAME);
 		}
 	}
 
