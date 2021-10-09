@@ -7,12 +7,10 @@ import com.mancala.app.model.GameSession;
 
 public interface MancalaService {
 
-	void validateUserWithGame(Principal user, String gameId);
+	String initiate(String user);
 
-	GameSession initiate(String user);
+	GameSession validateUserWithGame(Principal user, String gameId);
 
 	GameBoard makeMove(String user, int pit);
-
-	GameBoard check(String user);
 
 }

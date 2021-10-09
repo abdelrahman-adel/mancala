@@ -19,4 +19,5 @@ public class GameSession {
 	private String turn;
 	private GameStatus status;
 	private GameBoard gameBoard;
+
 }

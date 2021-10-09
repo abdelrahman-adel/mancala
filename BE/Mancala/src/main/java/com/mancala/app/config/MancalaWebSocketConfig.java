@@ -13,7 +13,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class MancalaWebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 	@Autowired
-	private GameValidityInterceptor authenticationChannelInterceptor;
+	private GameValidityInterceptor gameValidityInterceptor;
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
@@ -32,6 +32,6 @@ public class MancalaWebSocketConfig implements WebSocketMessageBrokerConfigurer 
 
 	@Override
 	public void configureClientInboundChannel(ChannelRegistration registration) {
-		registration.interceptors(authenticationChannelInterceptor);
+		registration.interceptors(gameValidityInterceptor);
 	}
 }

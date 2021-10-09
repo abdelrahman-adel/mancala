@@ -16,7 +16,7 @@ function connect(event) {
 		document.querySelector('#welcome-page').classList.add('hidden');
 		document.querySelector('#dialogue-page').classList.remove('hidden');
 
-		fetch('/mancala/initiate?user=abdo', {
+		fetch('/mancala/initiate', {
 			method : 'POST',
 			body : {}
 		}).then((response) => {
@@ -43,7 +43,7 @@ function connect(event) {
 }
 
 function connectionSuccess() {
-	stompClient.subscribe('/game/' + gameId +'?123', onMessageReceived);
+	stompClient.subscribe('/game/' + gameId, onMessageReceived);
 
 	stompClient.send("/make-move/" + gameId, {}, JSON.stringify({
 		sender : name,

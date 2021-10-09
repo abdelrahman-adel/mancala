@@ -1,10 +1,13 @@
 package com.mancala.app.service.impl;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.mancala.app.dao.GameSessionDAO;
 import com.mancala.app.exception.MancalaBusinessException;
@@ -21,24 +24,28 @@ public class MancalaServiceImpl implements MancalaService {
 	private GameSessionDAO mancalaDao;
 
 	@Override
-	public void validateUserWithGame(Principal user, String gameId) {
+	public String initiate(String user) {
+		// find user IN_PROGRESS or PENDING game for disconnected users
+		GameSession gameSession = findUserPendingOrInprogressGames(user);
 
-		String name = user.getName();
-		GameSession gameSession = mancalaDao.findGameByAnyPlayer(name);
-
-		if (gameSession == null || !gameSession.getId().equalsIgnoreCase(gameId)) {
-			throw new MancalaBusinessException(StatusCodes.USER_NOT_ALLOWED_FOR_GAME);
+		if (gameSession == null) {
+			// user doesn't have a running game, then engage him in a one
+			gameSession = findOrCreatePendingGame(user);
 		}
+
+		return gameSession.getId();
 	}
 
-	@Override
-	public GameSession initiate(String user) {
-		GameSession gameSession = findOrCreateGame(user);
-		return gameSession;
+	private GameSession findUserPendingOrInprogressGames(String user) {
+		List<GameStatus> statuses = new ArrayList<>();
+		statuses.add(GameStatus.IN_PROGRESS);
+		statuses.add(GameStatus.PENDING);
+		return mancalaDao.findGameByStatusAndAnyPlayer(user, statuses);
 	}
 
-	private GameSession findOrCreateGame(String user) {
-		GameSession gameSession = mancalaDao.findGameByStatus(GameStatus.PENDING);
+	private GameSession findOrCreatePendingGame(String user) {
+		List<GameSession> gameSessions = mancalaDao.findGameByStatus(GameStatus.PENDING);
+		GameSession gameSession = CollectionUtils.isEmpty(gameSessions) ? null : gameSessions.get(0);
 
 		if (gameSession == null) {
 			gameSession = new GameSession();
@@ -53,7 +60,6 @@ public class MancalaServiceImpl implements MancalaService {
 		} else {
 			gameSession.setPlayer2(user);
 			gameSession.setStatus(GameStatus.IN_PROGRESS);
-
 			mancalaDao.updateGameSession(gameSession);
 		}
 		return gameSession;
@@ -65,19 +71,27 @@ public class MancalaServiceImpl implements MancalaService {
 	}
 
 	@Override
-	public GameBoard makeMove(String user, int pit) {
-		GameSession gameSession = mancalaDao.findGameByAnyPlayer(user);
-		validateGameSession(user, gameSession);
-		// TODO make the move
-		// TODO switch turns
-		return mancalaDao.updateGameSession(gameSession).getGameBoard();
+	public GameSession validateUserWithGame(Principal user, String gameId) {
+
+		List<GameStatus> statuses = new ArrayList<>();
+		statuses.add(GameStatus.IN_PROGRESS);
+		statuses.add(GameStatus.PENDING);
+		GameSession gameSession = mancalaDao.findGameByStatusAndAnyPlayer(user.getName(), statuses);
+
+		if (gameSession == null || !gameSession.getId().equalsIgnoreCase(gameId)) {
+			throw new MancalaBusinessException(StatusCodes.USER_NOT_ALLOWED_FOR_GAME);
+		}
+
+		return gameSession;
 	}
 
 	@Override
-	public GameBoard check(String user) {
-		GameSession gameSession = mancalaDao.findGameByAnyPlayer(user);
-		validateGameSessionExistence(gameSession);
-		return gameSession.getGameBoard();
+	public GameBoard makeMove(String user, int pit) {
+		GameSession gameSession = null;// mancalaDao.findGameByStatusAndAnyPlayer(user);
+		validateGameSession(user, gameSession);
+		// TODO make the move
+		// TODO switch turns and update the DB
+		return mancalaDao.updateGameSession(gameSession).getGameBoard();
 	}
 
 	private void validateGameSession(String user, GameSession gameSession) {
