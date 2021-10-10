@@ -2,7 +2,7 @@ package com.mancala.app.service;
 
 import com.mancala.app.model.GameSession;
 
-public interface MancalaService {
+public interface GameSessionService {
 
 	String initiate(String user);
 

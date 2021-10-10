@@ -5,13 +5,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mancala.app.service.MancalaService;
+import com.mancala.app.service.GameSessionService;
 
 @RestController
 public class MancalaController {
 
 	@Autowired
-	private MancalaService mancalaService;
+	private GameSessionService mancalaService;
 
 	@PostMapping("/mancala/initiate")
 	public String initiate() {

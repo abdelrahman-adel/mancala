@@ -11,17 +11,16 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.mancala.app.model.GameSession;
 import com.mancala.app.model.MakeMoveMessage;
-import com.mancala.app.service.MancalaService;
+import com.mancala.app.service.GameSessionService;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
-//@Validated
 public class MancalaWebSocketHandler extends TextWebSocketHandler {
 
 	@Autowired
-	private MancalaService mancalaService;
+	private GameSessionService gameSessionService;
 
 	@Autowired
 	private SimpMessagingTemplate template;
@@ -29,17 +28,17 @@ public class MancalaWebSocketHandler extends TextWebSocketHandler {
 	@MessageMapping("/ready/{gameId}")
 	public void ready(@DestinationVariable String gameId, SimpMessageHeaderAccessor accessor) {
 		log.debug("User is ready");
-		GameSession game = mancalaService.validateUserWithGame(accessor.getUser().getName(), gameId);
+		GameSession game = gameSessionService.validateUserWithGame(accessor.getUser().getName(), gameId);
 		template.convertAndSend("/game/" + gameId, game);
 	}
 
 	@MessageMapping("/make-move/{gameId}")
 	public void makeMove(@DestinationVariable String gameId, @Payload MakeMoveMessage makeMoveMessage, SimpMessageHeaderAccessor accessor) {
-		log.debug("User makes a move");
+		log.debug("User is making a move");
 		String username = accessor.getUser().getName();
-		GameSession game = mancalaService.validateUserWithGame(username, gameId);
-		if (makeMoveMessage != null) {
-			game = mancalaService.makeMove(game, username, makeMoveMessage.getPit());
+		GameSession game = gameSessionService.validateUserWithGame(username, gameId);
+		if (makeMoveMessage != null && makeMoveMessage.getPit() != null) {
+			game = gameSessionService.makeMove(game, username, makeMoveMessage.getPit());
 		}
 
 		template.convertAndSend("/game/" + gameId, game);

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import com.mancala.app.exception.MancalaBusinessException;
 import com.mancala.app.exception.MancalaSystemException;
 import com.mancala.app.model.StatusCodes;
-import com.mancala.app.service.MancalaService;
+import com.mancala.app.service.GameSessionService;
 
 @Component
 public class GameValidityInterceptor implements ChannelInterceptor {
@@ -22,7 +22,7 @@ public class GameValidityInterceptor implements ChannelInterceptor {
 	private static final String GAME_ID_HEADER = "gameId";
 
 	@Autowired
-	private MancalaService mancalaService;
+	private GameSessionService mancalaService;
 
 	@Override
 	public Message<?> preSend(Message<?> message, MessageChannel channel) {
