@@ -56,14 +56,11 @@ function sendMessage(event) {
 	var messageContent = document.querySelector('#chatMessage').value.trim();
 
 	if (messageContent && stompClient) {
-		var chatMessage = {
-			sender : name,
-			content : document.querySelector('#chatMessage').value,
-			type : 'CHAT'
+		var playMessage = {
+			pit : messageContent
 		};
 
-		stompClient.send("/app/make-move/" + gameId, {}, JSON
-				.stringify(chatMessage));
+		stompClient.send("/app/make-move/" + gameId, {}, JSON.stringify(playMessage));
 		document.querySelector('#chatMessage').value = '';
 	}
 	event.preventDefault();

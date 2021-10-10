@@ -1,9 +1,14 @@
 package com.mancala.app.service.impl;
 
+import org.springframework.stereotype.Service;
+
 import com.mancala.app.model.GameBoard;
+import com.mancala.app.model.GameSession;
+import com.mancala.app.model.GameStatus;
 import com.mancala.app.model.GameTurn;
 import com.mancala.app.service.GameBoardService;
 
+@Service
 public class GameBoardServiceImpl implements GameBoardService {
 
 	@Override
@@ -21,9 +26,11 @@ public class GameBoardServiceImpl implements GameBoardService {
 	}
 
 	@Override
-	public GameTurn makeMove(GameBoard board, GameTurn player, int pit) {
+	public void makeMove(GameSession gameSession, int pit) {
 
-		int[] pits = board.getPits();
+		GameTurn player = gameSession.getTurn();
+
+		int[] pits = gameSession.getGameBoard().getPits();
 
 		int pitsToGo = pits[pit];
 		pits[pit] = 0;
@@ -34,24 +41,22 @@ public class GameBoardServiceImpl implements GameBoardService {
 		while (turn == null) {
 
 			pitsToGo--;
+			pits[i]++;
 			if (pitsToGo == 0) {
 				if (GameTurn.P1 == player) {
 					if (i == 6) {
 						turn = GameTurn.P1;
-					} else if (pits[i] == 0) {
+					} else if (pits[i] == 1) {
 						turn = GameTurn.P2;
 					}
 				} else {
 					if (i == 13) {
 						turn = GameTurn.P2;
-					} else if (pits[i] == 0) {
+					} else if (pits[i] == 1) {
 						turn = GameTurn.P1;
 					}
 				}
-				pitsToGo = pits[i] + 1;
-				pits[i] = 0;
-			} else {
-				pits[i]++;
+				pitsToGo = pits[i];
 			}
 
 			if (GameTurn.P1 == player) {
@@ -65,7 +70,27 @@ public class GameBoardServiceImpl implements GameBoardService {
 			}
 		}
 
-		return turn;
+		gameSession.setTurn(turn);
+		if (isGameFinished(pits)) {
+			gameSession.setStatus(GameStatus.FINISHED);
+		}
+	}
+
+	private boolean isGameFinished(int[] pits) {
+
+		int p1Zeroes = 0;
+		int p2Zeroes = 0;
+		for (int i = 0; i < 7; i++) {
+			if (pits[i] == 0)
+				p1Zeroes++;
+			if (pits[i + 7] == 0)
+				p2Zeroes++;
+		}
+
+		if (p1Zeroes == 6 || p2Zeroes == 6)
+			return true;
+		else
+			return false;
 	}
 
 }

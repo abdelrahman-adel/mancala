@@ -12,11 +12,13 @@ import com.mancala.app.dao.GameSessionDAO;
 import com.mancala.app.exception.MancalaBusinessException;
 import com.mancala.app.model.GameSession;
 import com.mancala.app.model.GameStatus;
-import com.mancala.app.model.GameTurn;
 import com.mancala.app.model.StatusCodes;
 import com.mancala.app.service.GameBoardService;
 import com.mancala.app.service.GameSessionService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class GameSessionServiceImpl implements GameSessionService {
 
@@ -57,10 +59,11 @@ public class GameSessionServiceImpl implements GameSessionService {
 	@Override
 	public GameSession makeMove(GameSession gameSession, String player, int pit) {
 
+		log.debug("Game Before: {}", gameSession);
 		validateMove(gameSession, player, pit);
-		GameTurn newTurn = gameBoardService.makeMove(gameSession.getGameBoard(), gameSession.getTurn(), pit);
+		gameBoardService.makeMove(gameSession, pit);
 
-		gameSession.setTurn(newTurn);
+		log.debug("Game After: {}", gameSession);
 		return gameSessionDAO.updateGameSession(gameSession);
 	}
 

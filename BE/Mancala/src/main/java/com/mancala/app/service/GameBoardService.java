@@ -1,12 +1,12 @@
 package com.mancala.app.service;
 
 import com.mancala.app.model.GameBoard;
-import com.mancala.app.model.GameTurn;
+import com.mancala.app.model.GameSession;
 
 public interface GameBoardService {
 
 	GameBoard createGameBoard();
 
-	GameTurn makeMove(GameBoard board, GameTurn player, int pit);
+	void makeMove(GameSession gameSession, int pit);
 
 }
