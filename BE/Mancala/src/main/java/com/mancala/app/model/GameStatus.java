@@ -5,5 +5,4 @@ public enum GameStatus {
 	PENDING,
 	IN_PROGRESS,
 	FINISHED
-
 }

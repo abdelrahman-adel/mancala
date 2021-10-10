@@ -1,6 +1,5 @@
 package com.mancala.app.service.impl;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -66,17 +65,25 @@ public class MancalaServiceImpl implements MancalaService {
 	}
 
 	private GameBoard createGameBoard() {
-		// TODO Auto-generated method stub
-		return null;
+		GameBoard board = new GameBoard();
+		int[] pits = board.getPits();
+		for (int i = 0; i < pits.length; i++) {
+			if (i == 6 || i == 13) {
+				pits[i] = 0;
+			} else {
+				pits[i] = 6;
+			}
+		}
+		return board;
 	}
 
 	@Override
-	public GameSession validateUserWithGame(Principal user, String gameId) {
+	public GameSession validateUserWithGame(String user, String gameId) {
 
 		List<GameStatus> statuses = new ArrayList<>();
 		statuses.add(GameStatus.IN_PROGRESS);
 		statuses.add(GameStatus.PENDING);
-		GameSession gameSession = mancalaDao.findGameByStatusAndAnyPlayer(user.getName(), statuses);
+		GameSession gameSession = mancalaDao.findGameByStatusAndAnyPlayer(user, statuses);
 
 		if (gameSession == null || !gameSession.getId().equalsIgnoreCase(gameId)) {
 			throw new MancalaBusinessException(StatusCodes.USER_NOT_ALLOWED_FOR_GAME);
@@ -86,24 +93,22 @@ public class MancalaServiceImpl implements MancalaService {
 	}
 
 	@Override
-	public GameBoard makeMove(String user, int pit) {
-		GameSession gameSession = null;// mancalaDao.findGameByStatusAndAnyPlayer(user);
-		validateGameSession(user, gameSession);
+	public GameSession makeMove(GameSession gameSession, String player, int pit) {
+		validateMove(gameSession, player, pit);
 		// TODO make the move
 		// TODO switch turns and update the DB
-		return mancalaDao.updateGameSession(gameSession).getGameBoard();
+		return mancalaDao.updateGameSession(gameSession);
 	}
 
-	private void validateGameSession(String user, GameSession gameSession) {
-		validateGameSessionExistence(gameSession);
-		if (!user.equals(gameSession.getTurn())) {
+	private void validateMove(GameSession gameSession, String player, int pit) {
+		if (!player.equals(gameSession.getTurn())) {
 			throw new MancalaBusinessException(StatusCodes.NOT_YOUR_TURN);
 		}
-	}
-
-	private void validateGameSessionExistence(GameSession gameSession) {
-		if (gameSession == null) {
-			throw new MancalaBusinessException(StatusCodes.NO_RUNNING_GAME);
+		if (player.equals(gameSession.getPlayer1()) && (pit < 0 || pit > 5)) {
+			throw new MancalaBusinessException(StatusCodes.INVALID_PIT);
+		}
+		if (player.equals(gameSession.getPlayer2()) && (pit < 7 || pit > 12)) {
+			throw new MancalaBusinessException(StatusCodes.INVALID_PIT);
 		}
 	}
 

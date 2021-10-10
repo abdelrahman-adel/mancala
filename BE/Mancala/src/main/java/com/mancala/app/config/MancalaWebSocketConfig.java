@@ -27,7 +27,7 @@ public class MancalaWebSocketConfig implements WebSocketMessageBrokerConfigurer 
 
 		// Message received with one of those below destinationPrefixes will be
 		// automatically router to controllers @MessageMapping
-		registry.setApplicationDestinationPrefixes("/make-move");
+		registry.setApplicationDestinationPrefixes("/app");
 	}
 
 	@Override

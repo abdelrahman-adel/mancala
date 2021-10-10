@@ -45,7 +45,7 @@ function connect(event) {
 function connectionSuccess() {
 	stompClient.subscribe('/game/' + gameId, onMessageReceived);
 
-	stompClient.send("/make-move/" + gameId, {}, JSON.stringify({
+	stompClient.send("/app/ready/" + gameId, {}, JSON.stringify({
 		sender : name,
 		type : 'newUser'
 	}));
@@ -62,7 +62,7 @@ function sendMessage(event) {
 			type : 'CHAT'
 		};
 
-		stompClient.send("/make-move/" + gameId, {}, JSON
+		stompClient.send("/app/make-move/" + gameId, {}, JSON
 				.stringify(chatMessage));
 		document.querySelector('#chatMessage').value = '';
 	}

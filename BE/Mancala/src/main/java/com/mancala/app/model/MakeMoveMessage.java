@@ -3,7 +3,7 @@ package com.mancala.app.model;
 import lombok.Data;
 
 @Data
-public class GameBoard {
+public class MakeMoveMessage {
 
-	private int[] pits = new int[14];
+	private Integer pit;
 }
