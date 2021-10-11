@@ -77,6 +77,12 @@ public class GameBoardServiceImpl implements GameBoardService {
 		gameSession.setTurn(turn);
 		if (isGameFinished(pits)) {
 			gameSession.setStatus(GameStatus.FINISHED);
+			if (pits[6] > pits[13])
+				gameSession.setWinner(gameSession.getPlayer1());
+			else if (pits[6] < pits[13])
+				gameSession.setWinner(gameSession.getPlayer2());
+			else if (pits[6] == pits[13])
+				gameSession.setWinner("DRAW");
 		}
 	}
 
@@ -91,10 +97,7 @@ public class GameBoardServiceImpl implements GameBoardService {
 				p2Zeroes++;
 		}
 
-		if (p1Zeroes == 6 || p2Zeroes == 6)
-			return true;
-		else
-			return false;
+		return p1Zeroes == 6 || p2Zeroes == 6 ? true : false;
 	}
 
 }

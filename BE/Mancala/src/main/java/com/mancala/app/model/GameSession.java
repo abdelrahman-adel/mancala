@@ -16,6 +16,7 @@ public class GameSession {
 	private String id;
 	private String player1;
 	private String player2;
+	private String winner;
 	private GameTurn turn = GameTurn.P1;
 	private GameStatus status;
 	private GameBoard gameBoard;

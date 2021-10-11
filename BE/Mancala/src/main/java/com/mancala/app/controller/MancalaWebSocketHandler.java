@@ -10,7 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.mancala.app.model.GameSession;
-import com.mancala.app.model.MakeMoveMessage;
+import com.mancala.app.model.MakeMoveRq;
+import com.mancala.app.model.MakeMoveRs;
 import com.mancala.app.service.GameSessionService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -33,15 +34,17 @@ public class MancalaWebSocketHandler extends TextWebSocketHandler {
 	}
 
 	@MessageMapping("/make-move/{gameId}")
-	public void makeMove(@DestinationVariable String gameId, @Payload MakeMoveMessage makeMoveMessage, SimpMessageHeaderAccessor accessor) {
+	public void makeMove(@DestinationVariable String gameId, @Payload MakeMoveRq makeMoveRq, SimpMessageHeaderAccessor accessor) {
 		log.debug("User is making a move");
 		String username = accessor.getUser().getName();
 		GameSession game = gameSessionService.validateUserWithGame(username, gameId);
-		if (makeMoveMessage != null && makeMoveMessage.getPit() != null) {
-			game = gameSessionService.makeMove(game, username, makeMoveMessage.getPit());
+		if (makeMoveRq != null && makeMoveRq.getPit() != null) {
+			game = gameSessionService.makeMove(game, username, makeMoveRq.getPit());
+			MakeMoveRs makeMoveRs = new MakeMoveRs();
+			makeMoveRs.setGameSession(game);
+			makeMoveRs.setMessage("Winner winner chicke dinner: " + game.getWinner());
+			template.convertAndSend("/game/" + gameId, makeMoveRs);
 		}
-
-		template.convertAndSend("/game/" + gameId, game);
 	}
 
 }

@@ -3,7 +3,7 @@ package com.mancala.app.model;
 import lombok.Data;
 
 @Data
-public class MakeMoveMessage {
+public class MakeMoveRq {
 
 	private Integer pit;
 }

@@ -115,6 +115,9 @@ public class GameSessionServiceImpl implements GameSessionService {
 		if (player.equals(gameSession.getPlayer2()) && (pit < 7 || pit > 12)) {
 			throw new MancalaBusinessException(StatusCodes.INVALID_PIT);
 		}
+		if (gameSession.getGameBoard().getPits()[pit] < 1) {
+			throw new MancalaBusinessException(StatusCodes.INVALID_PIT);
+		}
 	}
 
 }
