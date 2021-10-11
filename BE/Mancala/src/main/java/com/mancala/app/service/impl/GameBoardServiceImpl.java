@@ -38,7 +38,7 @@ public class GameBoardServiceImpl implements GameBoardService {
 		int i = pit + 1;
 
 		GameTurn turn = null;
-		while (turn == null) {
+		while (true) {
 
 			pitsToGo--;
 			pits[i]++;
@@ -56,7 +56,11 @@ public class GameBoardServiceImpl implements GameBoardService {
 						turn = GameTurn.P1;
 					}
 				}
+				if (turn != null) {
+					break;
+				}
 				pitsToGo = pits[i];
+				pits[i] = 0;
 			}
 
 			if (GameTurn.P1 == player) {
