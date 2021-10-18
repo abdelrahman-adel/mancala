@@ -10,7 +10,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 
 @Configuration
 @EnableWebSocketMessageBroker
-public class MancalaWebSocketConfig implements WebSocketMessageBrokerConfigurer {
+public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 	@Autowired
 	private GameValidityInterceptor gameValidityInterceptor;
@@ -22,11 +22,7 @@ public class MancalaWebSocketConfig implements WebSocketMessageBrokerConfigurer 
 
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry registry) {
-		// These are endpoints the client can subscribes to.
 		registry.enableSimpleBroker("/game");
-
-		// Message received with one of those below destinationPrefixes will be
-		// automatically router to controllers @MessageMapping
 		registry.setApplicationDestinationPrefixes("/app");
 	}
 

@@ -52,6 +52,9 @@ public class GameValidityInterceptor implements ChannelInterceptor {
 				} catch (Exception ex) {
 					throw new MancalaSystemException(StatusCodes.SYSTEM_MALFORMED_CHANNEL);
 				}
+				if (gameId == null || gameId.trim().isEmpty()) {
+					throw new MancalaBusinessException(StatusCodes.MISSING_GAME_ID);
+				}
 				mancalaService.validateUserWithGame(user.getName(), gameId);
 				break;
 			default:

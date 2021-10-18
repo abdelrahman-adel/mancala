@@ -12,6 +12,7 @@ import com.mancala.app.dao.GameSessionDAO;
 import com.mancala.app.exception.MancalaBusinessException;
 import com.mancala.app.model.GameSession;
 import com.mancala.app.model.GameStatus;
+import com.mancala.app.model.InitiateRs;
 import com.mancala.app.model.StatusCodes;
 import com.mancala.app.service.GameBoardService;
 import com.mancala.app.service.GameSessionService;
@@ -29,16 +30,18 @@ public class GameSessionServiceImpl implements GameSessionService {
 	private GameSessionDAO gameSessionDAO;
 
 	@Override
-	public String initiate(String user) {
+	public InitiateRs initiate(String user) {
 		// find user IN_PROGRESS or PENDING game for disconnected users
-		GameSession gameSession = findUserPendingOrInprogressGames(user);
+		GameSession gameSession = findUserPendingOrInprogressGame(user);
 
 		if (gameSession == null) {
 			// user doesn't have a running game, then engage him in a one
 			gameSession = findOrCreatePendingGame(user);
 		}
 
-		return gameSession.getId();
+		InitiateRs initiateRs = new InitiateRs();
+		initiateRs.setGameId(gameSession.getId());
+		return initiateRs;
 	}
 
 	@Override
@@ -67,7 +70,7 @@ public class GameSessionServiceImpl implements GameSessionService {
 		return gameSessionDAO.updateGameSession(gameSession);
 	}
 
-	private GameSession findUserPendingOrInprogressGames(String user) {
+	private GameSession findUserPendingOrInprogressGame(String user) {
 		List<GameStatus> statuses = new ArrayList<>();
 		statuses.add(GameStatus.IN_PROGRESS);
 		statuses.add(GameStatus.PENDING);

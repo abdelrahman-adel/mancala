@@ -21,10 +21,10 @@ function connect(event) {
 			body : {}
 		}).then((response) => {
 			console.log(response);
-			return response.text();
-		}).then((text) => {
-			console.log(text);
-			gameId = text;
+			return response.json();
+		}).then((json) => {
+			console.log(json);
+			gameId = json.gameId;
 
 			try {
 				var socket = new SockJS('/mancala', null, {});
